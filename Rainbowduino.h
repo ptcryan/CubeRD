@@ -55,7 +55,7 @@ has kindly released these example programs with no copyright.
 
 #define CmdMode 0b0000000000000000
 
-//extern unsigned char simpleFont[][8];
+extern unsigned char simpleFont[][8];
 
 // Simple labels for each axis
 
@@ -63,17 +63,16 @@ static const byte X = 0;
 static const byte Y = 1;
 static const byte Z = 2;
 
+static const byte COLOR_PLANE_RED   = 2;
+static const byte COLOR_PLANE_GREEN = 1;
+static const byte COLOR_PLANE_BLUE  = 0;
+
 static const byte CUBE_SIZE = 4;
 
 class Rainbowduino
 {
 public:
     void init();
-//    void init_timer1(void);
-//    void send16bitData(unsigned int data);
-//    void latchData(void);
-//    void switchOnDrive(unsigned char line);
-//    void clearDisplay(void); //Is not made private method as used in ISR. Use this like a private method.
     void blankDisplay(void);
     void setPixelXY(unsigned char x, unsigned char y, uint32_t colorRGB /*24-Bit RGB Color*/);
     void setPixelXY(unsigned char x, unsigned char y, unsigned char  colorR,  unsigned char colorG, unsigned char colorB);
@@ -84,14 +83,18 @@ public:
     void all(rgb_t rgb);
     void cubeFillPlaneZ(byte z, rgb_t rgb);
     void setplane(byte axis, byte position, rgb_t rgb);
-//    void drawCircle(int poX, int poY, int r, uint32_t colorRGB /*24-bit RGB Color*/);
-//    void fillCircle(int poX, int poY, int r, uint32_t colorRGB /*24-bit RGB Color*/);
-//    void drawLine(unsigned int x0,unsigned int y0,unsigned int x1,unsigned int y1, uint32_t colorRGB /*24-bit RGB Color*/);
-//    void drawVerticalLine(unsigned int poX, unsigned int poY,unsigned int length, uint32_t colorRGB /*24-bit RGB Color*/);
-//    void drawHorizontalLine(unsigned int poX, unsigned int poY,unsigned int length, uint32_t colorRGB /*24-bit RGB Color*/);
-//    void drawRectangle(unsigned int poX, unsigned int poY, unsigned int length,unsigned int width, uint32_t colorRGB /*24-bit RGB Color*/);
-//    void fillRectangle(unsigned int poX, unsigned int poY, unsigned int length, unsigned int width, uint32_t colorRGB /*24-bit RGB Color*/);
-//    void drawChar(unsigned char ascii,unsigned int poX, unsigned int poY, uint32_t colorRGB /*24-bit RGB Color*/);
+    void shift(byte axis, byte direction);
+    void copyplane(byte axis, byte position, byte destination);
+    void moveplane(byte axis, byte position, byte destination, rgb_t rgb);
+    void drawCircle(int poX, int poY, int r, uint32_t colorRGB /*24-bit RGB Color*/);
+    void fillCircle(int poX, int poY, int r, uint32_t colorRGB /*24-bit RGB Color*/);
+    void drawLine(unsigned int x0,unsigned int y0,unsigned int x1,unsigned int y1, uint32_t colorRGB /*24-bit RGB Color*/);
+    void drawVerticalLine(unsigned int poX, unsigned int poY,unsigned int length, uint32_t colorRGB /*24-bit RGB Color*/);
+    void drawHorizontalLine(unsigned int poX, unsigned int poY,unsigned int length, uint32_t colorRGB /*24-bit RGB Color*/);
+    void drawRectangle(unsigned int poX, unsigned int poY, unsigned int length,unsigned int width, uint32_t colorRGB /*24-bit RGB Color*/);
+    void fillRectangle(unsigned int poX, unsigned int poY, unsigned int length, unsigned int width, uint32_t colorRGB /*24-bit RGB Color*/);
+    void drawChar(unsigned char ascii,unsigned int poX, unsigned int poY, uint32_t colorRGB /*24-bit RGB Color*/);
+    void next(rgb_t rgb);
 
 private:
     void init_timer1(void);
@@ -99,15 +102,11 @@ private:
     void cubeAll(rgb_t rgb);
     void fillPlaneZ(byte z, rgb_t rgb);
     void cubeSetplane(byte axis, byte offset, rgb_t rgb);
-//    void send16bitData(unsigned int data);
-//    void latchData(void);
-//    void switchOnDrive(unsigned char line);
-//    void clearDisplay(void); //Is not made private method as used in ISR. Use this like a private method.
-//    void setPixelXY(unsigned char x, unsigned char y, uint32_t colorRGB /*24-Bit RGB Color*/);
-//    void setPixelXY(unsigned char x, unsigned char y, unsigned char  colorR,  unsigned char colorG, unsigned char colorB);
-//    void setPixelXY(unsigned char start, unsigned char end, uint32_t *colorRGB);
-//    void setPixelZXY(unsigned char z, unsigned char x, unsigned char y,  uint32_t  /*24-bit RGB Color*/);
-//    void setPixelZXY(unsigned char z, unsigned char x, unsigned char y, unsigned char  colorR,  unsigned char colorG, unsigned char colorB);
+    void cubeNext(rgb_t rgb);
+    void cubeShift(byte axis, byte direction);
+    void cubeCopyplane(byte axis, byte position, byte destination);
+    void cubeMoveplane(byte axis, byte position, byte destination, rgb_t rgb);
+    rgb_t getPixelZXY(unsigned char z, unsigned char x, unsigned char y);
 };
 
 extern Rainbowduino Rb;

@@ -261,7 +261,13 @@ void Rainbowduino::setPixelXY(unsigned char start, unsigned char end, uint32_t *
       setPixelXY(i/8, i % 8, colorRGB[ci]);
       ci++; 
     }
+}
 
+rgb_t Rainbowduino::getPixelZXY(unsigned char z, unsigned char x, unsigned char y) {
+
+    return RGB(frameBuffer[COLOR_PLANE_RED]   [ZX[z][x]] [YX[y][x]],
+               frameBuffer[COLOR_PLANE_GREEN] [ZX[z][x]] [YX[y][x]],
+               frameBuffer[COLOR_PLANE_BLUE]  [ZX[z][x]] [YX[y][x]]);
 }
 
 void Rainbowduino::set(unsigned char x, unsigned char y, unsigned char z, rgb_t colorRGB) {
@@ -337,110 +343,210 @@ void Rainbowduino::cubeSetplane(byte axis, byte offset, rgb_t rgb) {
     }
   }
 }
-// void Rainbowduino::drawCircle(int poX, int poY, int r, uint32_t color)
-// {
-//     int x = -r, y = 0, err = 2-2*r, e2;
-//     do {
-//         setPixelXY(poX-x, poY+y,color);
-//         setPixelXY(poX+x, poY+y,color);
-//         setPixelXY(poX+x, poY-y,color);
-//         setPixelXY(poX-x, poY-y,color);
-//         e2 = err;
-//         if (e2 <= y) {
-//             err += ++y*2+1;
-//             if (-x == y && e2 <= x) e2 = 0;
-//         }
-//         if (e2 > x) err += ++x*2+1;
-//     }
-//     while (x <= 0);
-// }
 
-// void Rainbowduino::fillCircle(int poX, int poY, int r, uint32_t color)
-// {
-//     int x = -r, y = 0, err = 2-2*r, e2;
-//     do {
+void Rainbowduino::next(rgb_t rgb) {
 
-//         drawVerticalLine(poX-x,poY-y,2*y,color);
-//         drawVerticalLine(poX+x,poY-y,2*y,color);
+  cubeNext(rgb);
+}
 
-//         e2 = err;
-//         if (e2 <= y) {
-//             err += ++y*2+1;
-//             if (-x == y && e2 <= x) e2 = 0;
-//         }
-//         if (e2 > x) err += ++x*2+1;
-//     }
-//     while (x <= 0);
+void Rainbowduino::cubeNext(rgb_t rgb) {
 
-// }
+  cursorX++;
+  if(cursorX > CUBE_SIZE - 1)
+  {
+    cursorX = 0;
+    cursorY++;
+    if(cursorY > CUBE_SIZE - 1)
+    {
+      cursorY = 0;
+      cursorZ++;
+      if(cursorZ > CUBE_SIZE - 1)
+      {
+        cursorZ = 0;
+      }
+    }
+  }
+  
+  cubeSet(cursorX, cursorY, cursorZ, rgb);
+}
 
-// void Rainbowduino::drawLine(unsigned int x0,unsigned int y0,unsigned int x1,unsigned int y1, uint32_t color)
-// {
-//     int dx = abs(x1-x0), sx = x0<x1 ? 1 : -1;
-//     int dy = -abs(y1-y0), sy = y0<y1 ? 1 : -1;
-//     int err = dx+dy, e2; /* error value e_xy */
-//     for (;;){ /* loop */
-//         setPixelXY(x0,y0,color);
-//         e2 = 2*err;
-//         if (e2 >= dy) { /* e_xy+e_x > 0 */
-//             if (x0 == x1) break;
-//             err += dy;
-//             x0 += sx;
-//         }
-//         if (e2 <= dx) {  e_xy+e_y < 0 
-//             if (y0 == y1) break;
-//             err += dx;
-//             y0 += sy;
-//         }
-//     }
-// }
+void Rainbowduino::shift(byte axis, byte direction) {
 
-// void Rainbowduino::drawVerticalLine(unsigned int poX, unsigned int poY,unsigned int length, uint32_t color)
-// {
-//    drawLine(poX,poY,poX,poY+length-1,color);
-// }
+  cubeShift(axis, direction);
+}
 
-// void Rainbowduino::drawHorizontalLine(unsigned int poX, unsigned int poY,unsigned int length, uint32_t color)
-// {
-//    drawLine(poX,poY,poX+length-1,poY,color);
-// }
+void Rainbowduino::cubeShift(byte axis, byte direction) {
 
-// void Rainbowduino::drawRectangle(unsigned int poX, unsigned int poY, unsigned int length,unsigned int width, uint32_t color)
-// {
-//     drawHorizontalLine(poX, poY, length, color);
-//     drawHorizontalLine(poX, poY+width-1, length, color);
-//     drawVerticalLine(poX, poY, width,color);
-//     drawVerticalLine(poX+length-1, poY, width,color);
-// }
+  if( direction == '+' )
+  {
+    for (byte i = CUBE_SIZE - 1; i > 0; i--) {
+      cubeCopyplane(axis, i - 1, i);
+    }
+    cubeSetplane(axis, 0, BLACK);
+  }
+  if( direction == '-' )
+  {
+    for (byte i = 0; i < CUBE_SIZE - 1; i++) {
+      cubeCopyplane(axis, i + 1, i);
+    }
+    cubeSetplane(axis, 3, BLACK);
+  }
+}
 
-// void Rainbowduino::fillRectangle(unsigned int poX, unsigned int poY, unsigned int length, unsigned int width, uint32_t color)
-// {
-//     for(unsigned int i=0;i<width;i++)
-//     {
-//         drawHorizontalLine(poX, poY+i, length, color);
-//     }
-// }
+void Rainbowduino::copyplane(byte axis, byte position, byte destination) {
 
-// void Rainbowduino::drawChar(unsigned char ascii,unsigned int poX, unsigned int poY,  uint32_t colorRGB)
-// {
-//     if((ascii < 0x20)||(ascii > 0x7e))//Unsupported char.
-//     {
-//         ascii = '?';
-//     }
-//     for(unsigned char i=0;i<8;i++)
-//     {
-//         unsigned char temp = pgm_read_byte(&simpleFont[ascii-0x20][i]);
-//         for(unsigned char f=0;f<8;f++)
-//         {
-//             if((temp>>f)&0x01)
-//             {
-//                 setPixelXY(poY+f, poX+i, colorRGB);
-//             }
+  cubeCopyplane(axis, position, destination);
+}
 
-//         }
-//     }
-// }
+void Rainbowduino::cubeCopyplane(byte axis, byte position, byte destination) {
 
+  if( axis == X)
+  {
+
+    byte y = 0;
+    byte z = 0;
+    for (byte z = 0;  z < CUBE_SIZE;  z++) {
+      for (byte y = 0;  y < CUBE_SIZE;  y++) {
+        cubeSet(destination, y, z, getPixelZXY(position, y, z));
+      }
+    }
+  }
+  if( axis == Y)
+  {
+    byte x = 0;
+    byte z = 0;
+    for (byte z = 0;  z < CUBE_SIZE;  z++) {
+      for (byte x = 0;  x < CUBE_SIZE;  x++) {
+        cubeSet(x, destination, z, getPixelZXY(x, position, z));
+      }
+    }
+  }
+  if( axis == Z)
+  {
+    byte x = 0;
+    byte y = 0;
+    for (byte y = 0;  y < CUBE_SIZE;  y++) {
+      for (byte x = 0;  x < CUBE_SIZE;  x++) {
+        cubeSet(x, y, destination, getPixelZXY(x, y, position));
+      }
+    }
+  }
+}
+
+void Rainbowduino::moveplane(byte axis, byte position, byte destination, rgb_t rgb) {
+
+  cubeMoveplane(axis, position, destination, rgb); 
+}
+
+void Rainbowduino::cubeMoveplane(byte axis, byte position, byte destination, rgb_t rgb) {
+
+  cubeCopyplane(axis, position, destination);
+  cubeSetplane(axis, position, rgb);
+}
+
+void Rainbowduino::drawCircle(int poX, int poY, int r, uint32_t color)
+{
+    int x = -r, y = 0, err = 2-2*r, e2;
+    do {
+        setPixelXY(poX-x, poY+y,color);
+        setPixelXY(poX+x, poY+y,color);
+        setPixelXY(poX+x, poY-y,color);
+        setPixelXY(poX-x, poY-y,color);
+        e2 = err;
+        if (e2 <= y) {
+            err += ++y*2+1;
+            if (-x == y && e2 <= x) e2 = 0;
+        }
+        if (e2 > x) err += ++x*2+1;
+    }
+    while (x <= 0);
+}
+
+void Rainbowduino::fillCircle(int poX, int poY, int r, uint32_t color)
+{
+    int x = -r, y = 0, err = 2-2*r, e2;
+    do {
+
+        drawVerticalLine(poX-x,poY-y,2*y,color);
+        drawVerticalLine(poX+x,poY-y,2*y,color);
+
+        e2 = err;
+        if (e2 <= y) {
+            err += ++y*2+1;
+            if (-x == y && e2 <= x) e2 = 0;
+        }
+        if (e2 > x) err += ++x*2+1;
+    }
+    while (x <= 0);
+
+}
+
+void Rainbowduino::drawLine(unsigned int x0,unsigned int y0,unsigned int x1,unsigned int y1, uint32_t color)
+{
+    int dx = abs(x1-x0), sx = x0<x1 ? 1 : -1;
+    int dy = -abs(y1-y0), sy = y0<y1 ? 1 : -1;
+    int err = dx+dy, e2; /* error value e_xy */
+    for (;;){ /* loop */
+        setPixelXY(x0,y0,color);
+        e2 = 2*err;
+        if (e2 >= dy) { /* e_xy+e_x > 0 */
+            if (x0 == x1) break;
+            err += dy;
+            x0 += sx;
+        }
+        if (e2 <= dx) { /* e_xy+e_y < 0 */
+            if (y0 == y1) break;
+            err += dx;
+            y0 += sy;
+        }
+    }
+}
+
+void Rainbowduino::drawVerticalLine(unsigned int poX, unsigned int poY,unsigned int length, uint32_t color)
+{
+   drawLine(poX,poY,poX,poY+length-1,color);
+}
+
+void Rainbowduino::drawHorizontalLine(unsigned int poX, unsigned int poY,unsigned int length, uint32_t color)
+{
+   drawLine(poX,poY,poX+length-1,poY,color);
+}
+
+void Rainbowduino::drawRectangle(unsigned int poX, unsigned int poY, unsigned int length,unsigned int width, uint32_t color)
+{
+    drawHorizontalLine(poX, poY, length, color);
+    drawHorizontalLine(poX, poY+width-1, length, color);
+    drawVerticalLine(poX, poY, width,color);
+    drawVerticalLine(poX+length-1, poY, width,color);
+}
+
+void Rainbowduino::fillRectangle(unsigned int poX, unsigned int poY, unsigned int length, unsigned int width, uint32_t color)
+{
+    for(unsigned int i=0;i<width;i++)
+    {
+        drawHorizontalLine(poX, poY+i, length, color);
+    }
+}
+
+void Rainbowduino::drawChar(unsigned char ascii,unsigned int poX, unsigned int poY,  uint32_t colorRGB)
+{
+    if((ascii < 0x20)||(ascii > 0x7e))//Unsupported char.
+    {
+        ascii = '?';
+    }
+    for(unsigned char i=0;i<8;i++)
+    {
+        unsigned char temp = pgm_read_byte(&simpleFont[ascii-0x20][i]);
+        for(unsigned char f=0;f<8;f++)
+        {
+            if((temp>>f)&0x01)
+            {
+                setPixelXY(poY+f, poX+i, colorRGB);
+            }
+
+        }
+    }
+}
 
 //Timer1 Interrupt Service Routine
 //All frameBuffer data exchange happens here
