@@ -11,16 +11,10 @@
  * - None, yet.
  */
 
-#ifndef CUBE_cpp
-#define CUBE_cpp
-
 #include "Cube.h"
 #include "engine.h"
 
-byte executeNop(
-  bytecode_t bytecode) {
-
+byte executeNop(bytecode_t bytecode) {
   byte errorCode = 0;
   return(errorCode);
 }
-#endif

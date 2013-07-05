@@ -29,4 +29,4 @@ typedef struct {
 #define WHITE  RGB(0xff, 0xff, 0xff)
 #define YELLOW RGB(0xff, 0xff, 0x00)
 
-#endif
+#endif  // COLOR_h

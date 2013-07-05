@@ -280,7 +280,11 @@ void CubeRD::cubeSet(unsigned char x,
 }
 
 void CubeRD::all(rgb_t rgb) {
-    for (byte z = 0; z < CUBE_SIZE; z++) cubeFillPlaneZ(z, rgb);
+    cubeAll(rgb);
+}
+
+void CubeRD::cubeAll(rgb_t rgb) {
+  for (byte z = 0;  z < CUBE_SIZE;  z++) cubeFillPlaneZ(z, rgb);
 }
 
 void CubeRD::fillPlaneZ(byte  z, rgb_t rgb) {

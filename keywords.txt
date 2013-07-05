@@ -6,6 +6,7 @@ setPixelXY	KEYWORD2
 setPixelZXY	KEYWORD2
 set	KEYWORD2
 all	KEYWORD2
+setAll	KEYWORD2
 cubeFillPlaneZ	KEYWORD2
 setplane	KEYWORD2
 shift	KEYWORD2

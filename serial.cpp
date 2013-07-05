@@ -11,22 +11,16 @@
  * - None, yet.
  */
 
-#ifndef CUBE_cpp
-#define CUBE_cpp
-
-#include "Cube.h"
+//#include "Cube.h"
 #include "serial.h"
 
-long    messageTimer = 0;
-long    serialTimer = 0;
+uint32_t messageTimer = 0;
+uint32_t serialTimer = 0;
 Stream *serial;
 
 extern boolean readMessage(void);
 
-void Cube::serialBegin(
-  byte serialPort,
-  long baudRate) {
-
+void serialBegin(byte serialPort, uint32_t baudRate) {
   serial = NULL;
 
   switch (serialPort) {
@@ -36,8 +30,11 @@ void Cube::serialBegin(
       break;
 
     case 1:
-      Serial1.begin(baudRate);
-      serial = & Serial1;
+      // FIXME: Where is Serial1 declared?
+//      Serial1.begin(baudRate);
+      Serial.begin(baudRate);
+//      serial = & Serial1;
+      serial = & Serial;
       break;
   }
 
@@ -49,7 +46,7 @@ void Cube::serialBegin(
 
 void serialHandler(void) {
   if (serial) {
-    long timeNow = millis();
+    uint32_t timeNow = millis();
 
     if (messageLength > 0) {
       if (timeNow >= messageTimer) messageLength = 0;
@@ -59,7 +56,6 @@ void serialHandler(void) {
       serialTimer = timeNow + SERIAL_HANDLER_PERIOD;
 
       if (readMessage()) {
-//      serial->println(message);
         receivedSerialCommand = true;
         bytecode_t bytecode = {};
         byte errorCode = parser(message, messageLength, & bytecode);
@@ -69,8 +65,7 @@ void serialHandler(void) {
   }
 }
 
-boolean Cube::hasReceivedSerialCommand()
-{
+boolean hasReceivedSerialCommand() {
   return receivedSerialCommand;
 }
 
@@ -80,7 +75,7 @@ boolean readMessage() {
 
     char data = serial->read();
 
-    switch(data) {
+    switch (data) {
       case CR:
       case SEMIC:
         return(true);  // complete message ready
@@ -107,4 +102,3 @@ boolean readMessage() {
 
   return(false);  // partial message only
 }
-#endif

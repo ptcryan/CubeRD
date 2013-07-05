@@ -8,8 +8,14 @@
 #ifndef SERIAL_h
 #define SERIAL_h
 
-static const unsigned long MESSAGE_TIMEOUT = 5000;  // milliseconds
-static const unsigned long SERIAL_HANDLER_PERIOD = 5;  // milliseconds
+#include <Arduino.h>
+#include <avr/pgmspace.h>
+#include "color.h"
+#include "engine.h"
+#include "parser.h"
+
+static const uint32_t MESSAGE_TIMEOUT = 5000;  // milliseconds
+static const uint32_t SERIAL_HANDLER_PERIOD = 5;  // milliseconds
 
 static const byte NUL =   0x00;  // Null character
 static const byte STX =   0x02;  // Start of TeXt
@@ -26,6 +32,15 @@ static const byte SEMIC = 0x3b;  // Semicolon ';'
 
 char message[32];
 byte messageLength = 0;
-bool receivedSerialCommand = false;  // Set to true the first time the sketch receives a serial command
 
-#endif
+// Set to true the first time the sketch receives a serial command
+bool receivedSerialCommand = false;
+
+void serialBegin(byte serialPort, uint32_t baudRate);
+void serialHandler(void);
+boolean hasReceivedSerialCommand(void);
+boolean readMessage(void);
+
+extern Stream *serial;
+
+#endif  // SERIAL_h

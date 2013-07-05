@@ -13,24 +13,27 @@
  * - Decide how to represent the hidden location. Using -1 for now
  */
 
-#ifndef CUBE_cpp
-#define CUBE_cpp
-
 #include "Cube.h"
+#include "serial.h"
 #include "engine.h"
 #include "parser.h"
+
+CubeRD cube;
 
 byte parseCommand(
   char *message, byte length, byte *position, command_t **command
 );
 
 byte parseRGB(char *message, byte length, byte *position, rgb_t *rgb);
-byte parsePosition(char *message, byte length, byte *position, byte *positionX, byte *positionY, byte *positionZ);
+byte parsePosition(char *message, byte length, byte *position,
+                   byte *positionX, byte *positionY, byte *positionZ);
 byte parseOffset(char *message, byte length, byte *position, byte *offset);
 byte parseAxis(char *message, byte length, byte *position, byte *axis);
-byte parseDirection(char *message, byte length, byte *position, byte *direction);
+byte parseDirection(char *message, byte length, byte *position,
+                    byte *direction);
 
-byte checkForHexadecimal(char *message, byte length, byte *position, byte *digit);
+byte checkForHexadecimal(char *message, byte length, byte *position,
+                         byte *digit);
 byte checkForOffset(char *message, byte length, byte *position, byte *digit);
 byte checkForAxis(char *message, byte length, byte *position, byte *digit);
 byte checkForDirection(char *message, byte length, byte *position, byte *digit);
@@ -44,7 +47,6 @@ byte parser(
   char       *message,
   byte        length,
   bytecode_t *bytecode) {
-
   byte errorCode = 0;
   byte position = 0;
 
@@ -103,7 +105,7 @@ byte parseCommandAll(
 
   errorCode = parseRGB(message, length, position, & bytecode->u.lit.colorFrom);
 
-  if (errorCode == 0) cubeAll(bytecode->u.lit.colorFrom);
+  if (errorCode == 0) cube.all(bytecode->u.lit.colorFrom);
 
   return(errorCode);
 };
@@ -125,7 +127,7 @@ byte parseCommandShift(
   skipWhitespace(message, length, position);
   errorCode = parseDirection(message, length, position, & direction);
 
-  if (errorCode == 0) cubeShift(axis, direction);
+  if (errorCode == 0) cube.shift(axis, direction);
 
   return(errorCode);
 };
@@ -148,7 +150,7 @@ byte parseCommandSet(
   skipWhitespace(message, length, position);
   errorCode = parseRGB(message, length, position, & bytecode->u.lit.colorFrom);
 
-  if (errorCode == 0) cubeSet( positionX, positionY, positionZ, bytecode->u.lit.colorFrom);
+  if (errorCode == 0) cube.set( positionX, positionY, positionZ, bytecode->u.lit.colorFrom);
 
   return(errorCode);
 };
@@ -166,7 +168,7 @@ byte parseCommandNext(
   skipWhitespace(message, length, position);
   errorCode = parseRGB(message, length, position, & bytecode->u.lit.colorFrom);
 
-  if (errorCode == 0) cubeNext(bytecode->u.lit.colorFrom);
+  if (errorCode == 0) cube.next(bytecode->u.lit.colorFrom);
 
   return(errorCode);
 };
@@ -191,7 +193,7 @@ byte parseCommandCopyplane(
   skipWhitespace(message, length, position);
   errorCode = parseOffset(message, length, position, & destination);
 
-  if (errorCode == 0) cubeCopyplane(axis, offset, destination);
+  if (errorCode == 0) cube.copyplane(axis, offset, destination);
 
   return(errorCode);
 };
@@ -219,7 +221,7 @@ byte parseCommandMoveplane(
   skipWhitespace(message, length, position);
   errorCode = parseRGB(message, length, position, & rgb);
 
-  if (errorCode == 0) cubeMoveplane(axis, offset, destination, rgb);
+  if (errorCode == 0) cube.moveplane(axis, offset, destination, rgb);
 
   return(errorCode);
 };
@@ -243,7 +245,7 @@ byte parseCommandSetplane(
   skipWhitespace(message, length, position);
   errorCode = parseRGB(message, length, position, & bytecode->u.lit.colorFrom);
 
-  if (errorCode == 0) cubeSetplane(axis, offset, bytecode->u.lit.colorFrom);
+  if (errorCode == 0) cube.setplane(axis, offset, bytecode->u.lit.colorFrom);
 
   return(errorCode);
 };
@@ -270,8 +272,8 @@ byte parseCommandHelp(
     serial->println("  setplane <axis> <offset> <colour>;                   (eg: 'setplane X 2 BLUE;', or 'setplane Y 1 00ff00;')");
     serial->println("  copyplane <axis> <from offset> <to offset>;          (eg: 'copyplane X 2 1;')");
     serial->println("  moveplane <axis> <from offset> <to offset> <colour>; (eg: 'move Z 1 3 BLACK;', or 'move X 3 0 GREEN;')");
-    //serial->println("  Graphics and shapes:");
-    //serial->println("line <location1> <location2> <colour>;      (eg: 'line 000 333 WHITE;', or 'line 000 333 ffffff;') INCOMPLETE");
+    // serial->println("  Graphics and shapes:");
+    // serial->println("line <location1> <location2> <colour>;      (eg: 'line 000 333 WHITE;', or 'line 000 333 ffffff;') INCOMPLETE");
     serial->println("Supported colour aliases:");
     serial->println("  BLACK BLUE GREEN ORANGE PINK PURPLE RED WHITE YELLOW");
     serial->println("  *** Please see www.freetronics.com/cube for more information ***");
@@ -633,7 +635,7 @@ void skipWhitespace(
   byte  length,
   byte *position) {
 
-  while (*position < length  &&  message[*position] == SPACE) (*position) ++;
+  while (*position < length  &&  message[*position] == SPACE_) (*position) ++;
 }
 
 boolean stringCompare(
@@ -659,6 +661,5 @@ boolean stringCompare(
 boolean stringDelimiter(
   char character) {
 
-  return(character == NUL  ||  character == SPACE  ||  character == RBRAC);
+  return(character == NUL_  ||  character == SPACE_  ||  character == RBRAC_);
 }
-#endif

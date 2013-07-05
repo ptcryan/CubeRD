@@ -39,4 +39,5 @@ typedef struct bytecode_s {
 // byte sequenceStep = 0;
 
 byte executeNop(bytecode_t bytecode);
-#endif
+
+#endif  // ENGINE_h
