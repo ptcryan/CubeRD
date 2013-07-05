@@ -40,7 +40,7 @@ these example programs with no copyright.
 #include "color.h"
 #include "engine.h"
 #include "serial.h"
-#include "parser.h"
+//#include "parser.h"
 
 // MY9221 driver interfaces
 

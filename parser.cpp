@@ -13,12 +13,12 @@
  * - Decide how to represent the hidden location. Using -1 for now
  */
 
-#include "Cube.h"
-#include "serial.h"
-#include "engine.h"
+//#include "Cube.h"
+//#include "serial.h"
+//#include "engine.h"
 #include "parser.h"
 
-CubeRD cube;
+extern CubeRD cube;
 
 byte parseCommand(
   char *message, byte length, byte *position, command_t **command

@@ -8,6 +8,11 @@
 #ifndef PARSER_h
 #define PARSER_h
 
+#include <Arduino.h>
+#include <avr/pgmspace.h>
+#include "cubeRD.h"
+#include "engine.h"
+
 static const byte NUL_   = 0x00;  // Null character
 static const byte SPACE_ = 0x20;  // Space bar
 static const byte RBRAC_ = 0x29;  // Right bracket ')'

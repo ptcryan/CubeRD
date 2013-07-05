@@ -8,6 +8,10 @@
 #ifndef ENGINE_h
 #define ENGINE_h
 
+#include <Arduino.h>
+#include <avr/pgmspace.h>
+#include "color.h"
+
 typedef struct bytecode_s {
   byte (*executer)(struct bytecode_s bytecode);
 
