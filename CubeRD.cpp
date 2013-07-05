@@ -27,7 +27,7 @@ in paper "The Beauty of Bresenham's Algorithm" by Alois Zingl, Vienna, Austria. 
 has kindly released these example programs with no copyright.
 */
 
-#include "Rainbowduino.h"
+#include "CubeRD.h"
 
 // Frame Buffer -- placed in RAM
 unsigned char frameBuffer[3][8][8]= {
@@ -84,9 +84,15 @@ unsigned char cursorX, cursorY, cursorZ;
 
 unsigned char lineDrive = 0;  // used within ISR
 
+void CubeRD::begin(byte serialPort, uint32_t baudRate) {
+  serialBegin(serialPort, baudRate);
+  init();
+  all(BLACK);
+}
+
 // Init the Port lines and invoke timer 1 configuration
 
-void Rainbowduino::init() {
+void CubeRD::init() {
   DDR_Lines |= BIT_Lines;
   PORT_Lines &= ~BIT_Lines;
 
@@ -105,7 +111,7 @@ void Rainbowduino::init() {
 
 // Configure Timer 1 ISR for periodic 100uS interrupts
 // initialize Timer1 to overflow every  100uS
-void Rainbowduino::init_timer1(void) {
+void CubeRD::init_timer1(void) {
   TCCR1A = 0;           // clear control register A
   TCCR1B = _BV(WGM13);  // set mode as phase and frequency
                           // correct pwm, stop the timer
@@ -172,7 +178,7 @@ void clearDisplay(void) {
 }
 
 // blank all pixels
-void Rainbowduino::blankDisplay(void) {
+void CubeRD::blankDisplay(void) {
   for (unsigned char x = 0; x <= 7; x++) {
     for (unsigned char y = 0; y <= 7; y++) {
       frameBuffer[0][x][y] = 0x00;
@@ -183,7 +189,7 @@ void Rainbowduino::blankDisplay(void) {
 }
 
 // set the pixel (X,Y) of RGB matrix with colour 24-bit RGB Colour
-void Rainbowduino::setPixelXY(unsigned char x,
+void CubeRD::setPixelXY(unsigned char x,
                               unsigned char y,
                               uint32_t colorRGB /*24-bit RGB Color*/) {
   if (x > 7 || y > 7) {
@@ -202,7 +208,7 @@ void Rainbowduino::setPixelXY(unsigned char x,
 }
 
 // set the pixel (X,Y) of RGB matrix with colours R,G,B
-void Rainbowduino::setPixelXY(unsigned char x,
+void CubeRD::setPixelXY(unsigned char x,
                               unsigned char y,
                               unsigned char colorR,
                               unsigned char colorG,
@@ -213,7 +219,7 @@ void Rainbowduino::setPixelXY(unsigned char x,
 }
 
 // set the pixel (Z,X,Y) of RGB Cube with colour 24-bit RGB Colour
-void Rainbowduino::setPixelZXY(unsigned char z,
+void CubeRD::setPixelZXY(unsigned char z,
                                unsigned char x,
                                unsigned char y,
                                uint32_t colorRGB /*24-bit RGB Color*/) {
@@ -221,7 +227,7 @@ void Rainbowduino::setPixelZXY(unsigned char z,
 }
 
 // set the pixel (Z,X,Y) of RGB Cube with colours R,G,B
-void Rainbowduino::setPixelZXY(unsigned char z,
+void CubeRD::setPixelZXY(unsigned char z,
                                unsigned char x,
                                unsigned char y,
                                unsigned char colorR,
@@ -233,7 +239,7 @@ void Rainbowduino::setPixelZXY(unsigned char z,
 // fill the frame buffer starting from 'start'
 // to ending at 'end' with values in colorRGB array.
 // Pixels range is from 0,1,2,.....61,62
-void Rainbowduino::setPixelXY(unsigned char start,
+void CubeRD::setPixelXY(unsigned char start,
                               unsigned char end,
                               uint32_t *colorRGB) {
   unsigned char ci = 0;
@@ -243,7 +249,7 @@ void Rainbowduino::setPixelXY(unsigned char start,
   }
 }
 
-rgb_t Rainbowduino::getPixelZXY(unsigned char z,
+rgb_t CubeRD::getPixelZXY(unsigned char z,
                                 unsigned char x,
                                 unsigned char y) {
   return RGB(frameBuffer[COLOR_PLANE_RED]   [ZX[z][x]] [YX[y][x]],
@@ -251,14 +257,14 @@ rgb_t Rainbowduino::getPixelZXY(unsigned char z,
              frameBuffer[COLOR_PLANE_BLUE]  [ZX[z][x]] [YX[y][x]]);
 }
 
-void Rainbowduino::set(unsigned char x,
+void CubeRD::set(unsigned char x,
                        unsigned char y,
                        unsigned char z,
                        rgb_t colorRGB) {
   cubeSet(x, y, z, colorRGB);
 }
 
-void Rainbowduino::cubeSet(unsigned char x,
+void CubeRD::cubeSet(unsigned char x,
                            unsigned char y,
                            unsigned char z,
                            rgb_t rgb) {
@@ -273,15 +279,15 @@ void Rainbowduino::cubeSet(unsigned char x,
   cursorZ = z;
 }
 
-void Rainbowduino::all(rgb_t rgb) {
+void CubeRD::all(rgb_t rgb) {
     for (byte z = 0; z < CUBE_SIZE; z++) cubeFillPlaneZ(z, rgb);
 }
 
-void Rainbowduino::fillPlaneZ(byte  z, rgb_t rgb) {
+void CubeRD::fillPlaneZ(byte  z, rgb_t rgb) {
   cubeFillPlaneZ(z, rgb);
 }
 
-void Rainbowduino::cubeFillPlaneZ(byte  z, rgb_t rgb) {
+void CubeRD::cubeFillPlaneZ(byte  z, rgb_t rgb) {
   for (byte y = 0;  y < CUBE_SIZE;  y++) {
     for (byte x = 0;  x < CUBE_SIZE;  x++) {
       cubeSet(x, y, z, rgb);
@@ -289,11 +295,11 @@ void Rainbowduino::cubeFillPlaneZ(byte  z, rgb_t rgb) {
   }
 }
 
-void Rainbowduino::setplane(byte axis, byte offset, rgb_t rgb) {
+void CubeRD::setplane(byte axis, byte offset, rgb_t rgb) {
   cubeSetplane(axis, offset, rgb);
 }
 
-void Rainbowduino::cubeSetplane(byte axis, byte offset, rgb_t rgb) {
+void CubeRD::cubeSetplane(byte axis, byte offset, rgb_t rgb) {
   if (axis == X) {
     byte y = 0;
     byte z = 0;
@@ -325,11 +331,11 @@ void Rainbowduino::cubeSetplane(byte axis, byte offset, rgb_t rgb) {
   }
 }
 
-void Rainbowduino::next(rgb_t rgb) {
+void CubeRD::next(rgb_t rgb) {
   cubeNext(rgb);
 }
 
-void Rainbowduino::cubeNext(rgb_t rgb) {
+void CubeRD::cubeNext(rgb_t rgb) {
   cursorX++;
   if (cursorX > CUBE_SIZE - 1) {
     cursorX = 0;
@@ -346,11 +352,11 @@ void Rainbowduino::cubeNext(rgb_t rgb) {
   cubeSet(cursorX, cursorY, cursorZ, rgb);
 }
 
-void Rainbowduino::shift(byte axis, byte direction) {
+void CubeRD::shift(byte axis, byte direction) {
   cubeShift(axis, direction);
 }
 
-void Rainbowduino::cubeShift(byte axis, byte direction) {
+void CubeRD::cubeShift(byte axis, byte direction) {
   if (direction == '+') {
     for (byte i = CUBE_SIZE - 1; i > 0; i--) {
       cubeCopyplane(axis, i - 1, i);
@@ -365,11 +371,11 @@ void Rainbowduino::cubeShift(byte axis, byte direction) {
   }
 }
 
-void Rainbowduino::copyplane(byte axis, byte position, byte destination) {
+void CubeRD::copyplane(byte axis, byte position, byte destination) {
   cubeCopyplane(axis, position, destination);
 }
 
-void Rainbowduino::cubeCopyplane(byte axis, byte position, byte destination) {
+void CubeRD::cubeCopyplane(byte axis, byte position, byte destination) {
   if (axis == X) {
     byte y = 0;
     byte z = 0;
@@ -399,14 +405,14 @@ void Rainbowduino::cubeCopyplane(byte axis, byte position, byte destination) {
   }
 }
 
-void Rainbowduino::moveplane(byte axis,
+void CubeRD::moveplane(byte axis,
                              byte position,
                              byte destination,
                              rgb_t rgb) {
   cubeMoveplane(axis, position, destination, rgb);
 }
 
-void Rainbowduino::cubeMoveplane(byte axis,
+void CubeRD::cubeMoveplane(byte axis,
                                  byte position,
                                  byte destination,
                                  rgb_t rgb) {
@@ -414,7 +420,7 @@ void Rainbowduino::cubeMoveplane(byte axis,
   cubeSetplane(axis, position, rgb);
 }
 
-void Rainbowduino::drawCircle(int poX, int poY, int r, uint32_t color) {
+void CubeRD::drawCircle(int poX, int poY, int r, uint32_t color) {
   int x = -r, y = 0, err = 2-2*r, e2;
   do {
     setPixelXY(poX - x, poY + y, color);
@@ -430,7 +436,7 @@ void Rainbowduino::drawCircle(int poX, int poY, int r, uint32_t color) {
   } while (x <= 0);
 }
 
-void Rainbowduino::fillCircle(int poX, int poY, int r, uint32_t color) {
+void CubeRD::fillCircle(int poX, int poY, int r, uint32_t color) {
   int x = -r, y = 0, err = 2 - 2 * r, e2;
   do {
     drawVerticalLine(poX - x, poY - y, 2 * y, color);
@@ -445,7 +451,7 @@ void Rainbowduino::fillCircle(int poX, int poY, int r, uint32_t color) {
   } while (x <= 0);
 }
 
-void Rainbowduino::drawLine(unsigned int x0,
+void CubeRD::drawLine(unsigned int x0,
                             unsigned int y0,
                             unsigned int x1,
                             unsigned int y1,
@@ -469,21 +475,21 @@ void Rainbowduino::drawLine(unsigned int x0,
   }
 }
 
-void Rainbowduino::drawVerticalLine(unsigned int poX,
+void CubeRD::drawVerticalLine(unsigned int poX,
                                     unsigned int poY,
                                     unsigned int length,
                                     uint32_t color) {
   drawLine(poX, poY, poX, poY + length - 1, color);
 }
 
-void Rainbowduino::drawHorizontalLine(unsigned int poX,
+void CubeRD::drawHorizontalLine(unsigned int poX,
                                       unsigned int poY,
                                       unsigned int length,
                                       uint32_t color) {
   drawLine(poX, poY, poX + length - 1, poY, color);
 }
 
-void Rainbowduino::drawRectangle(unsigned int poX,
+void CubeRD::drawRectangle(unsigned int poX,
                                  unsigned int poY,
                                  unsigned int length,
                                  unsigned int width,
@@ -494,7 +500,7 @@ void Rainbowduino::drawRectangle(unsigned int poX,
   drawVerticalLine(poX + length - 1, poY, width, color);
 }
 
-void Rainbowduino::fillRectangle(unsigned int poX,
+void CubeRD::fillRectangle(unsigned int poX,
                                  unsigned int poY,
                                  unsigned int length,
                                  unsigned int width,
@@ -504,7 +510,7 @@ void Rainbowduino::fillRectangle(unsigned int poX,
   }
 }
 
-void Rainbowduino::drawChar(unsigned char ascii,
+void CubeRD::drawChar(unsigned char ascii,
                             unsigned int poX,
                             unsigned int poY,
                             uint32_t colorRGB) {
@@ -571,4 +577,4 @@ ISR(TIMER1_OVF_vect) {
   PORTD &= ~0x04;
 }
 
-Rainbowduino Rb;
+CubeRD Rb;

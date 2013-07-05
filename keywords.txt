@@ -1,5 +1,6 @@
 Rainbowduino	KEYWORD1
 init	KEYWORD2
+begin	KEYWORD2
 blankDisplay	KEYWORD2
 setPixelXY	KEYWORD2
 setPixelZXY	KEYWORD2
