@@ -10,8 +10,6 @@
 
 #include <Arduino.h>
 #include <avr/pgmspace.h>
-//#include "color.h"
-//#include "engine.h"
 #include "parser.h"
 
 static const uint32_t MESSAGE_TIMEOUT = 5000;  // milliseconds

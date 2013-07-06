@@ -13,9 +13,6 @@
  * - Decide how to represent the hidden location. Using -1 for now
  */
 
-//#include "Cube.h"
-//#include "serial.h"
-//#include "engine.h"
 #include "parser.h"
 
 command_t commands[] = {
