@@ -424,6 +424,10 @@ void CubeRD::cubeMoveplane(byte axis,
   cubeSetplane(axis, position, rgb);
 }
 
+boolean CubeRD::hasReceivedSerialCommand(void) {
+  return(hasReceivedSerialCommand());
+}
+
 void CubeRD::drawCircle(int poX, int poY, int r, uint32_t color) {
   int x = -r, y = 0, err = 2-2*r, e2;
   do {
