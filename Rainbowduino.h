@@ -33,6 +33,6 @@ these example programs with no copyright.
 
 #include "CubeRD.h"
 
-extern CubeRD Rb;
+CubeRD Rb;
 
 #endif  // RAINBOWDUINO_h

@@ -18,7 +18,35 @@
 //#include "engine.h"
 #include "parser.h"
 
-extern CubeRD cube;
+command_t commands[] = {
+  "all",       parseCommandAll,       executeNop,
+  "shift",     parseCommandShift,     executeNop,
+  "set",       parseCommandSet,       executeNop,
+  "next",      parseCommandNext,      executeNop,
+  "setplane",  parseCommandSetplane,  executeNop,
+  "copyplane", parseCommandCopyplane, executeNop,
+  "moveplane", parseCommandMoveplane, executeNop,
+  "help",      parseCommandHelp,      executeNop
+};
+
+/*
+static const char *errorCodes[] = {
+  "Success",                   // 0
+  "Identifier isn't me",       // 1
+  "Initial '(' expected",      // 2
+  "Final ')' expected",        // 3
+  "Invalid identifier list",   // 4
+  "Invalid command",           // 5
+  "Integer expected",          // 6
+  "Colour (rrggbb) expected",  // 7
+  "Invalid seq command",       // 8
+  "Sequence memory full",      // 9
+  "Axis designator expected",  // 10
+  "Expected '+' or '-'"        // 11
+};
+ */
+
+byte commandCount = sizeof(commands) / sizeof(command_t);
 
 byte parseCommand(
   char *message, byte length, byte *position, command_t **command

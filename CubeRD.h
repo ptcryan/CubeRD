@@ -38,8 +38,8 @@ these example programs with no copyright.
 #include <Arduino.h>
 #include <avr/pgmspace.h>
 #include "color.h"
-#include "engine.h"
-#include "serial.h"
+//#include "engine.h"
+//#include "serial.h"
 //#include "parser.h"
 
 // MY9221 driver interfaces
@@ -161,5 +161,8 @@ class CubeRD {
     void cubeMoveplane(byte axis, byte position, byte destination, rgb_t rgb);
     rgb_t getPixelZXY(unsigned char z, unsigned char x, unsigned char y);
 };
+
+extern void serialBegin(byte serialPort, uint32_t baudRate);
+
 
 #endif  // CUBERD_h

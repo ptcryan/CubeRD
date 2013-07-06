@@ -581,4 +581,4 @@ ISR(TIMER1_OVF_vect) {
   PORTD &= ~0x04;
 }
 
-CubeRD Rb;
+//CubeRD Rb;
