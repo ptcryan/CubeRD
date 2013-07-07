@@ -13,11 +13,14 @@
 
 #include "serial.h"
 
+boolean readMessage(void);
+
 uint32_t messageTimer = 0;
 uint32_t serialTimer = 0;
 Stream *serial;
-
-extern boolean readMessage(void);
+// Set to true the first time the sketch receives a serial command
+// using volatile since it's modified in an ISR.
+volatile bool receivedSerialCommand = false;
 
 void serialBegin(byte serialPort, uint32_t baudRate) {
   serial = NULL;
@@ -64,8 +67,8 @@ void serialHandler(void) {
   }
 }
 
-boolean hasReceivedSerialCommand() {
-  return receivedSerialCommand;
+bool hasReceivedSerialCommand() {
+  return(receivedSerialCommand);
 }
 
 boolean readMessage() {

@@ -109,7 +109,7 @@ class CubeRD {
     void shift(byte axis, byte direction);
     void copyplane(byte axis, byte position, byte destination);
     void moveplane(byte axis, byte position, byte destination, rgb_t rgb);
-    boolean hasReceivedSerialCommand(void);
+    bool hasReceivedSerialCommand(void);
     void drawCircle(int poX,
                     int poY,
                     int r,
@@ -149,12 +149,6 @@ class CubeRD {
 
     private:
     void init_timer1(void);
-//    void fillPlaneZ(byte z, rgb_t rgb);
 };
-
-extern void serialBegin(byte serialPort, uint32_t baudRate);
-extern boolean hasReceivedSerialCommand(void);
-extern void serialHandler(void);
-extern bool printHelp(void);
 
 #endif  // CUBERD_h

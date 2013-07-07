@@ -13,6 +13,9 @@
 #include "cubeRD.h"
 #include "engine.h"
 
+
+byte parser(char *message, byte length, bytecode_t *bytecode);
+
 static const byte NUL_   = 0x00;  // Null character
 static const byte SPACE_ = 0x20;  // Space bar
 static const byte RBRAC_ = 0x29;  // Right bracket ')'
@@ -28,24 +31,6 @@ typedef struct command_s {
   byte (*executer)(bytecode_t bytecode);
 } command_t;
 
-byte parser(char *message, byte length, bytecode_t *bytecode);
-
-byte parseCommandAll(char *message, byte length, byte *position,
-                     command_t *command, bytecode_t *bytecode);
-byte parseCommandShift(char *message, byte length, byte *position,
-                       command_t *command, bytecode_t *bytecode);
-byte parseCommandSet(char *message, byte length, byte *position,
-                     command_t *command, bytecode_t *bytecode);
-byte parseCommandNext(char *message, byte length, byte *position,
-                      command_t *command, bytecode_t *bytecode);
-byte parseCommandSetplane(char *message, byte length, byte *position,
-                          command_t *command, bytecode_t *bytecode);
-byte parseCommandCopyplane(char *message, byte length, byte *position,
-                           command_t *command, bytecode_t *bytecode);
-byte parseCommandMoveplane(char *message, byte length, byte *position,
-                           command_t *command, bytecode_t *bytecode);
-byte parseCommandHelp(char *message, byte length, byte *position,
-                      command_t *command, bytecode_t *bytecode);
 bool printHelp(void);
 
 #endif  // PARSER_h

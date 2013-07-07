@@ -17,15 +17,32 @@
 #include "parser.h"
 
 extern void cubeAll(rgb_t rgb);
-void cubeSet(unsigned char x,
+extern void cubeSet(unsigned char x,
                            unsigned char y,
                            unsigned char z,
                            rgb_t rgb);
-void cubeShift(byte axis, byte direction);
-void cubeNext(rgb_t rgb);
-void cubeCopyplane(byte axis, byte position, byte destination);
-void cubeMoveplane(byte axis, byte position, byte destination, rgb_t rgb);
-void cubeSetplane(byte axis, byte offset, rgb_t rgb);
+extern void cubeShift(byte axis, byte direction);
+extern void cubeNext(rgb_t rgb);
+extern void cubeCopyplane(byte axis, byte position, byte destination);
+extern void cubeMoveplane(byte axis, byte position, byte destination, rgb_t rgb);
+extern void cubeSetplane(byte axis, byte offset, rgb_t rgb);
+
+byte parseCommandAll(char *message, byte length, byte *position,
+                     command_t *command, bytecode_t *bytecode);
+byte parseCommandShift(char *message, byte length, byte *position,
+                       command_t *command, bytecode_t *bytecode);
+byte parseCommandSet(char *message, byte length, byte *position,
+                     command_t *command, bytecode_t *bytecode);
+byte parseCommandNext(char *message, byte length, byte *position,
+                      command_t *command, bytecode_t *bytecode);
+byte parseCommandSetplane(char *message, byte length, byte *position,
+                          command_t *command, bytecode_t *bytecode);
+byte parseCommandCopyplane(char *message, byte length, byte *position,
+                           command_t *command, bytecode_t *bytecode);
+byte parseCommandMoveplane(char *message, byte length, byte *position,
+                           command_t *command, bytecode_t *bytecode);
+byte parseCommandHelp(char *message, byte length, byte *position,
+                      command_t *command, bytecode_t *bytecode);
 
 extern Stream *serial;
 
@@ -344,7 +361,7 @@ byte parseRGB(
       && (message[*position + 3] == 'C' || message[*position + 3] == 'c')
       && (message[*position + 4] == 'K' || message[*position + 4] == 'k'))
   {
-    *rgb = BLACK;
+    *rgb = COLOR_BLACK;
     (*position) += 5;
     errorCode = 0;
     return(errorCode);
@@ -355,7 +372,7 @@ byte parseRGB(
       && (message[*position + 2] == 'U' || message[*position + 2] == 'u')
       && (message[*position + 3] == 'E' || message[*position + 3] == 'e'))
   {
-    *rgb = BLUE;
+    *rgb = COLOR_BLUE;
     (*position) +=4;
     errorCode = 0;
     return(errorCode);
@@ -367,7 +384,7 @@ byte parseRGB(
       && (message[*position + 3] == 'E' || message[*position + 3] == 'e')
       && (message[*position + 4] == 'N' || message[*position + 4] == 'n'))
   {
-    *rgb = GREEN;
+    *rgb = COLOR_GREEN;
     (*position) += 5;
     errorCode = 0;
     return(errorCode);
@@ -380,7 +397,7 @@ byte parseRGB(
       && (message[*position + 4] == 'G' || message[*position + 4] == 'g')
       && (message[*position + 5] == 'E' || message[*position + 5] == 'e'))
   {
-    *rgb = ORANGE;
+    *rgb = COLOR_ORANGE;
     (*position) += 6;
     errorCode = 0;
     return(errorCode);
@@ -391,7 +408,7 @@ byte parseRGB(
       && (message[*position + 2] == 'N' || message[*position + 2] == 'n')
       && (message[*position + 3] == 'K' || message[*position + 3] == 'k'))
   {
-    *rgb = PINK;
+    *rgb = COLOR_PINK;
     (*position) +=4;
     errorCode = 0;
     return(errorCode);
@@ -404,7 +421,7 @@ byte parseRGB(
       && (message[*position + 4] == 'L' || message[*position + 4] == 'l')
       && (message[*position + 5] == 'E' || message[*position + 5] == 'e'))
   {
-    *rgb = PURPLE;
+    *rgb = COLOR_PURPLE;
     (*position) += 6;
     errorCode = 0;
     return(errorCode);
@@ -414,7 +431,7 @@ byte parseRGB(
       && (message[*position + 1] == 'E' || message[*position + 1] == 'e')
       && (message[*position + 2] == 'D' || message[*position + 2] == 'd'))
   {
-    *rgb = RED;
+    *rgb = COLOR_RED;
     (*position) += 3;;
     errorCode = 0;
     return(errorCode);
@@ -426,7 +443,7 @@ byte parseRGB(
       && (message[*position + 3] == 'T' || message[*position + 3] == 't')
       && (message[*position + 4] == 'E' || message[*position + 4] == 'e'))
   {
-    *rgb = WHITE;
+    *rgb = COLOR_WHITE;
     (*position) += 5;
     errorCode = 0;
     return(errorCode);
@@ -439,7 +456,7 @@ byte parseRGB(
       && (message[*position + 4] == 'O' || message[*position + 4] == 'o')
       && (message[*position + 5] == 'W' || message[*position + 5] == 'w'))
   {
-    *rgb = YELLOW;
+    *rgb = COLOR_YELLOW;
     (*position) += 6;
     errorCode = 0;
     return(errorCode);

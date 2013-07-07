@@ -100,6 +100,11 @@ rgb_t getPixelZXY(unsigned char z,
                   unsigned char x,
                   unsigned char y);
 
+extern void serialBegin(byte serialPort, uint32_t baudRate);
+extern void serialHandler(void);
+extern bool hasReceivedSerialCommand(void);
+extern bool printHelp(void);
+
 unsigned char cursorX, cursorY, cursorZ;
 
 unsigned char lineDrive = 0;  // used within ISR
@@ -107,7 +112,7 @@ unsigned char lineDrive = 0;  // used within ISR
 void CubeRD::begin(byte serialPort, uint32_t baudRate) {
   serialBegin(serialPort, baudRate);
   init();
-  all(BLACK);
+  all(COLOR_BLACK);
 }
 
 // Init the Port lines and invoke timer 1 configuration
@@ -317,10 +322,6 @@ void cubeAll(rgb_t rgb) {
   for (byte z = 0;  z < CUBE_SIZE;  z++) cubeFillPlaneZ(z, rgb);
 }
 
-//void CubeRD::fillPlaneZ(byte  z, rgb_t rgb) {
-//  cubeFillPlaneZ(z, rgb);
-//}
-
 void cubeFillPlaneZ(byte  z, rgb_t rgb) {
   for (byte y = 0;  y < CUBE_SIZE;  y++) {
     for (byte x = 0;  x < CUBE_SIZE;  x++) {
@@ -395,13 +396,13 @@ void cubeShift(byte axis, byte direction) {
     for (byte i = CUBE_SIZE - 1; i > 0; i--) {
       cubeCopyplane(axis, i - 1, i);
     }
-    cubeSetplane(axis, 0, BLACK);
+    cubeSetplane(axis, 0, COLOR_BLACK);
   }
   if (direction == '-') {
     for (byte i = 0; i < CUBE_SIZE - 1; i++) {
       cubeCopyplane(axis, i + 1, i);
     }
-    cubeSetplane(axis, 3, BLACK);
+    cubeSetplane(axis, 3, COLOR_BLACK);
   }
 }
 
@@ -454,7 +455,7 @@ void cubeMoveplane(byte axis,
   cubeSetplane(axis, position, rgb);
 }
 
-boolean CubeRD::hasReceivedSerialCommand(void) {
+bool CubeRD::hasReceivedSerialCommand(void) {
   return(hasReceivedSerialCommand());
 }
 
