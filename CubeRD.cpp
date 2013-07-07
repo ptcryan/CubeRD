@@ -80,6 +80,26 @@ void clearDisplay(void);
 void latchData(void);
 void switchOnDrive(unsigned char line);
 
+void cubeAll(rgb_t rgb);
+void cubeFillPlaneZ(byte z, rgb_t rgb);
+void cubeSet(unsigned char x,
+                           unsigned char y,
+                           unsigned char z,
+                           rgb_t rgb);
+void cubeShift(byte axis, byte direction);
+void cubeNext(rgb_t rgb);
+void cubeCopyplane(byte axis, byte position, byte destination);
+void cubeMoveplane(byte axis, byte position, byte destination, rgb_t rgb);
+void cubeSetplane(byte axis, byte offset, rgb_t rgb);
+void cubeSetPixelXY(unsigned char x,
+                              unsigned char y,
+                              unsigned char colorR,
+                              unsigned char colorG,
+                              unsigned char colorB);
+rgb_t getPixelZXY(unsigned char z,
+                  unsigned char x,
+                  unsigned char y);
+
 unsigned char cursorX, cursorY, cursorZ;
 
 unsigned char lineDrive = 0;  // used within ISR
@@ -190,8 +210,8 @@ void CubeRD::blankDisplay(void) {
 
 // set the pixel (X,Y) of RGB matrix with colour 24-bit RGB Colour
 void CubeRD::setPixelXY(unsigned char x,
-                              unsigned char y,
-                              uint32_t colorRGB /*24-bit RGB Color*/) {
+                        unsigned char y,
+                        uint32_t colorRGB /*24-bit RGB Color*/) {
   if (x > 7 || y > 7) {
   // Do nothing.
   // This check is used to avoid writing to out-of-bound pixels by graphics
@@ -209,10 +229,10 @@ void CubeRD::setPixelXY(unsigned char x,
 
 // set the pixel (X,Y) of RGB matrix with colours R,G,B
 void CubeRD::setPixelXY(unsigned char x,
-                              unsigned char y,
-                              unsigned char colorR,
-                              unsigned char colorG,
-                              unsigned char colorB) {
+                        unsigned char y,
+                        unsigned char colorR,
+                        unsigned char colorG,
+                        unsigned char colorB) {
   frameBuffer[0][x][y] = colorB;  // channel Blue
   frameBuffer[1][x][y] = colorG;  // channel Green
   frameBuffer[2][x][y] = colorR;  // channel Red
@@ -220,19 +240,19 @@ void CubeRD::setPixelXY(unsigned char x,
 
 // set the pixel (Z,X,Y) of RGB Cube with colour 24-bit RGB Colour
 void CubeRD::setPixelZXY(unsigned char z,
-                               unsigned char x,
-                               unsigned char y,
-                               uint32_t colorRGB /*24-bit RGB Color*/) {
+                         unsigned char x,
+                         unsigned char y,
+                         uint32_t colorRGB /*24-bit RGB Color*/) {
   setPixelXY(ZX[z][x], YX[y][x], colorRGB);
 }
 
 // set the pixel (Z,X,Y) of RGB Cube with colours R,G,B
 void CubeRD::setPixelZXY(unsigned char z,
-                               unsigned char x,
-                               unsigned char y,
-                               unsigned char colorR,
-                               unsigned char colorG,
-                               unsigned char colorB) {
+                         unsigned char x,
+                         unsigned char y,
+                         unsigned char colorR,
+                         unsigned char colorG,
+                         unsigned char colorB) {
   setPixelXY(ZX[z][x], YX[y][x], colorR, colorG, colorB);
 }
 
@@ -249,26 +269,26 @@ void CubeRD::setPixelXY(unsigned char start,
   }
 }
 
-rgb_t CubeRD::getPixelZXY(unsigned char z,
-                                unsigned char x,
-                                unsigned char y) {
+rgb_t getPixelZXY(unsigned char z,
+                  unsigned char x,
+                  unsigned char y) {
   return RGB(frameBuffer[COLOR_PLANE_RED]   [ZX[z][x]] [YX[y][x]],
              frameBuffer[COLOR_PLANE_GREEN] [ZX[z][x]] [YX[y][x]],
              frameBuffer[COLOR_PLANE_BLUE]  [ZX[z][x]] [YX[y][x]]);
 }
 
 void CubeRD::set(unsigned char x,
-                       unsigned char y,
-                       unsigned char z,
-                       rgb_t colorRGB) {
+                 unsigned char y,
+                 unsigned char z,
+                 rgb_t colorRGB) {
   cubeSet(x, y, z, colorRGB);
 }
 
-void CubeRD::cubeSet(unsigned char x,
-                           unsigned char y,
-                           unsigned char z,
-                           rgb_t rgb) {
-  setPixelXY(ZX[z][x],
+void cubeSet(unsigned char x,
+             unsigned char y,
+             unsigned char z,
+             rgb_t rgb) {
+  cubeSetPixelXY(ZX[z][x],
              YX[y][x],
              rgb.color[red],
              rgb.color[green],
@@ -279,19 +299,29 @@ void CubeRD::cubeSet(unsigned char x,
   cursorZ = z;
 }
 
+void cubeSetPixelXY(unsigned char x,
+                    unsigned char y,
+                    unsigned char colorR,
+                    unsigned char colorG,
+                    unsigned char colorB) {
+  frameBuffer[0][x][y] = colorB;  // channel Blue
+  frameBuffer[1][x][y] = colorG;  // channel Green
+  frameBuffer[2][x][y] = colorR;  // channel Red
+}
+
 void CubeRD::all(rgb_t rgb) {
     cubeAll(rgb);
 }
 
-void CubeRD::cubeAll(rgb_t rgb) {
+void cubeAll(rgb_t rgb) {
   for (byte z = 0;  z < CUBE_SIZE;  z++) cubeFillPlaneZ(z, rgb);
 }
 
-void CubeRD::fillPlaneZ(byte  z, rgb_t rgb) {
-  cubeFillPlaneZ(z, rgb);
-}
+//void CubeRD::fillPlaneZ(byte  z, rgb_t rgb) {
+//  cubeFillPlaneZ(z, rgb);
+//}
 
-void CubeRD::cubeFillPlaneZ(byte  z, rgb_t rgb) {
+void cubeFillPlaneZ(byte  z, rgb_t rgb) {
   for (byte y = 0;  y < CUBE_SIZE;  y++) {
     for (byte x = 0;  x < CUBE_SIZE;  x++) {
       cubeSet(x, y, z, rgb);
@@ -303,7 +333,7 @@ void CubeRD::setplane(byte axis, byte offset, rgb_t rgb) {
   cubeSetplane(axis, offset, rgb);
 }
 
-void CubeRD::cubeSetplane(byte axis, byte offset, rgb_t rgb) {
+void cubeSetplane(byte axis, byte offset, rgb_t rgb) {
   if (axis == X) {
     byte y = 0;
     byte z = 0;
@@ -339,7 +369,7 @@ void CubeRD::next(rgb_t rgb) {
   cubeNext(rgb);
 }
 
-void CubeRD::cubeNext(rgb_t rgb) {
+void cubeNext(rgb_t rgb) {
   cursorX++;
   if (cursorX > CUBE_SIZE - 1) {
     cursorX = 0;
@@ -360,7 +390,7 @@ void CubeRD::shift(byte axis, byte direction) {
   cubeShift(axis, direction);
 }
 
-void CubeRD::cubeShift(byte axis, byte direction) {
+void cubeShift(byte axis, byte direction) {
   if (direction == '+') {
     for (byte i = CUBE_SIZE - 1; i > 0; i--) {
       cubeCopyplane(axis, i - 1, i);
@@ -379,7 +409,7 @@ void CubeRD::copyplane(byte axis, byte position, byte destination) {
   cubeCopyplane(axis, position, destination);
 }
 
-void CubeRD::cubeCopyplane(byte axis, byte position, byte destination) {
+void cubeCopyplane(byte axis, byte position, byte destination) {
   if (axis == X) {
     byte y = 0;
     byte z = 0;
@@ -410,16 +440,16 @@ void CubeRD::cubeCopyplane(byte axis, byte position, byte destination) {
 }
 
 void CubeRD::moveplane(byte axis,
-                             byte position,
-                             byte destination,
-                             rgb_t rgb) {
+                       byte position,
+                       byte destination,
+                       rgb_t rgb) {
   cubeMoveplane(axis, position, destination, rgb);
 }
 
-void CubeRD::cubeMoveplane(byte axis,
-                                 byte position,
-                                 byte destination,
-                                 rgb_t rgb) {
+void cubeMoveplane(byte axis,
+                   byte position,
+                   byte destination,
+                   rgb_t rgb) {
   cubeCopyplane(axis, position, destination);
   cubeSetplane(axis, position, rgb);
 }
@@ -460,10 +490,10 @@ void CubeRD::fillCircle(int poX, int poY, int r, uint32_t color) {
 }
 
 void CubeRD::drawLine(unsigned int x0,
-                            unsigned int y0,
-                            unsigned int x1,
-                            unsigned int y1,
-                            uint32_t color) {
+                      unsigned int y0,
+                      unsigned int x1,
+                      unsigned int y1,
+                      uint32_t color) {
   int dx = abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
   int dy = -abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
   int err = dx+dy, e2; /* error value e_xy */
@@ -484,24 +514,24 @@ void CubeRD::drawLine(unsigned int x0,
 }
 
 void CubeRD::drawVerticalLine(unsigned int poX,
-                                    unsigned int poY,
-                                    unsigned int length,
-                                    uint32_t color) {
+                              unsigned int poY,
+                              unsigned int length,
+                              uint32_t color) {
   drawLine(poX, poY, poX, poY + length - 1, color);
 }
 
 void CubeRD::drawHorizontalLine(unsigned int poX,
-                                      unsigned int poY,
-                                      unsigned int length,
-                                      uint32_t color) {
+                                unsigned int poY,
+                                unsigned int length,
+                                uint32_t color) {
   drawLine(poX, poY, poX + length - 1, poY, color);
 }
 
 void CubeRD::drawRectangle(unsigned int poX,
-                                 unsigned int poY,
-                                 unsigned int length,
-                                 unsigned int width,
-                                 uint32_t color) {
+                           unsigned int poY,
+                           unsigned int length,
+                           unsigned int width,
+                           uint32_t color) {
   drawHorizontalLine(poX, poY, length, color);
   drawHorizontalLine(poX, poY + width - 1, length, color);
   drawVerticalLine(poX, poY, width, color);
@@ -509,19 +539,19 @@ void CubeRD::drawRectangle(unsigned int poX,
 }
 
 void CubeRD::fillRectangle(unsigned int poX,
-                                 unsigned int poY,
-                                 unsigned int length,
-                                 unsigned int width,
-                                 uint32_t color) {
+                           unsigned int poY,
+                           unsigned int length,
+                           unsigned int width,
+                           uint32_t color) {
   for (unsigned int i = 0; i < width; i++) {
     drawHorizontalLine(poX, poY+i, length, color);
   }
 }
 
 void CubeRD::drawChar(unsigned char ascii,
-                            unsigned int poX,
-                            unsigned int poY,
-                            uint32_t colorRGB) {
+                      unsigned int poX,
+                      unsigned int poY,
+                      uint32_t colorRGB) {
   if ((ascii < 0x20) || (ascii > 0x7e)) {  // Unsupported char.
     ascii = '?';
   }
@@ -587,7 +617,7 @@ ISR(TIMER1_OVF_vect) {
   // check for serial data coming in
   serialHandler();
 
-  // now enable interrupts and print help if necessary
+  // now enable interrupts and if necessary print help
   sei();
   printHelp();
 }

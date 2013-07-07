@@ -149,15 +149,7 @@ class CubeRD {
 
     private:
     void init_timer1(void);
-    void cubeSet(unsigned char x, unsigned char y, unsigned char z, rgb_t rgb);
-    void cubeAll(rgb_t rgb);
-    void fillPlaneZ(byte z, rgb_t rgb);
-    void cubeSetplane(byte axis, byte offset, rgb_t rgb);
-    void cubeNext(rgb_t rgb);
-    void cubeShift(byte axis, byte direction);
-    void cubeCopyplane(byte axis, byte position, byte destination);
-    void cubeMoveplane(byte axis, byte position, byte destination, rgb_t rgb);
-    rgb_t getPixelZXY(unsigned char z, unsigned char x, unsigned char y);
+//    void fillPlaneZ(byte z, rgb_t rgb);
 };
 
 extern void serialBegin(byte serialPort, uint32_t baudRate);
