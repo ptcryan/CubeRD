@@ -29,6 +29,10 @@ has kindly released these example programs with no copyright.
 
 #include "CubeRD.h"
 
+// If defined then include the code to add serial port function.
+// However, it uses a lot of memory (~9KB), so comment out if you don't need it.
+#define USE_SERIAL_PORT
+
 void send16bitData(unsigned int data);
 void clearDisplay(void);
 void latchData(void);
@@ -54,10 +58,12 @@ rgb_t getPixelZXY(unsigned char z,
                   unsigned char x,
                   unsigned char y);
 
+#ifdef USE_SERIAL_PORT
 extern void serialBegin(byte serialPort, uint32_t baudRate);
 extern void serialHandler(void);
 extern bool hasReceivedSerialCommand(void);
 extern bool printHelp(void);
+#endif  // USE_SERIAL_PORT
 
 // Frame Buffer -- placed in RAM
 unsigned char frameBuffer[3][8][8]= {
@@ -110,7 +116,10 @@ unsigned char cursorX, cursorY, cursorZ;
 unsigned char lineDrive = 0;  // used within ISR
 
 void CubeRD::begin(byte serialPort, uint32_t baudRate) {
+#ifdef USE_SERIAL_PORT
   serialBegin(serialPort, baudRate);
+#endif  // USE_SERIAL_PORT
+
   init();
   all(COLOR_BLACK);
 }
@@ -455,7 +464,12 @@ void cubeMoveplane(byte axis,
 }
 
 bool CubeRD::hasReceivedSerialCommand(void) {
+#ifdef USE_SERIAL_PORT
   return(hasReceivedSerialCommand());
+#endif  // USE_SERIAL_PORT
+#ifndef USE_SERIAL_PORT  // !USE_SERIAL_PORT
+  return(false);
+#endif  // !USE_SERIAL_PORT
 }
 
 void CubeRD::drawCircle(int poX, int poY, int r, uint32_t color) {
@@ -614,10 +628,12 @@ ISR(TIMER1_OVF_vect) {
 
   PORTD &= ~0x04;
 
+#ifdef USE_SERIAL_PORT
   // check for serial data coming in
   serialHandler();
 
   // now enable interrupts and if necessary print help
   sei();
   printHelp();
+#endif  // USE_SERIAL_PORT
 }
