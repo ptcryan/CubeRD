@@ -46,6 +46,8 @@ byte parseCommandMoveplane(char *message, byte length, byte *position,
                            command_t *command, bytecode_t *bytecode);
 byte parseCommandHelp(char *message, byte length, byte *position,
                       command_t *command, bytecode_t *bytecode);
+bool printHelp(void);
+
 
 extern Stream *serial;
 extern CubeRD cube;

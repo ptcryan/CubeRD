@@ -162,6 +162,7 @@ class CubeRD {
 
 extern void serialBegin(byte serialPort, uint32_t baudRate);
 extern boolean hasReceivedSerialCommand(void);
-
+extern void serialHandler(void);
+extern bool printHelp(void);
 
 #endif  // CUBERD_h

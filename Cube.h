@@ -1,7 +1,7 @@
 /*
  * File:    Cube.h
  * Version: 0.0
- * Author:  Andy Gelme (@geekscape)
+ * Author:  David Ryan (@ptcryan)
  * License: GPLv3
  */
 

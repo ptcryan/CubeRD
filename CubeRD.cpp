@@ -583,6 +583,13 @@ ISR(TIMER1_OVF_vect) {
   lineDrive++;
 
   PORTD &= ~0x04;
+
+  // check for serial data coming in
+  serialHandler();
+
+  // now enable interrupts and print help if necessary
+  sei();
+  printHelp();
 }
 
 //CubeRD Rb;

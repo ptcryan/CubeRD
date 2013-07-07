@@ -32,7 +32,8 @@ char message[32];
 byte messageLength = 0;
 
 // Set to true the first time the sketch receives a serial command
-bool receivedSerialCommand = false;
+// using volatile since it's modified in an ISR.
+volatile bool receivedSerialCommand = false;
 
 void serialBegin(byte serialPort, uint32_t baudRate);
 void serialHandler(void);

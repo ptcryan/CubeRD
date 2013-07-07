@@ -13,6 +13,7 @@
  * - Decide how to represent the hidden location. Using -1 for now
  */
 
+#include "cube.h"
 #include "parser.h"
 
 command_t commands[] = {
@@ -44,6 +45,7 @@ static const char *errorCodes[] = {
  */
 
 byte commandCount = sizeof(commands) / sizeof(command_t);
+volatile bool printHelpFlag = false;
 
 byte parseCommand(
   char *message, byte length, byte *position, command_t **command
@@ -275,6 +277,28 @@ byte parseCommandSetplane(
   return(errorCode);
 };
 
+bool printHelp(void) {
+  if (printHelpFlag) {
+    printHelpFlag = false;
+    serial->println("  *** Available commands ***");
+    serial->println("Entire cube:");
+    serial->println("  all <colour>;                                        (eg: 'all RED;', or 'all ff0000;')");
+    serial->println("  shift <axis> <direction>;                            (eg: 'shift X +;', or 'shift Y -;')");
+    serial->println("Single LED:");
+    serial->println("  set <location> <colour>;                             (eg: 'set 112 GREEN;', or 'set 112 00ff00;')");
+    serial->println("  next <colour>;                                       (eg: 'next BLUE;', or 'next 0000ff;')");
+    serial->println("One axis:");
+    serial->println("  setplane <axis> <offset> <colour>;                   (eg: 'setplane X 2 BLUE;', or 'setplane Y 1 00ff00;')");
+    serial->println("  copyplane <axis> <from offset> <to offset>;          (eg: 'copyplane X 2 1;')");
+    serial->println("  moveplane <axis> <from offset> <to offset> <colour>; (eg: 'move Z 1 3 BLACK;', or 'move X 3 0 GREEN;')");
+    // serial->println("  Graphics and shapes:");
+    // serial->println("line <location1> <location2> <colour>;      (eg: 'line 000 333 WHITE;', or 'line 000 333 ffffff;') INCOMPLETE");
+    serial->println("Supported colour aliases:");
+    serial->println("  BLACK BLUE GREEN ORANGE PINK PURPLE RED WHITE YELLOW");
+    serial->println("  *** Please see www.freetronics.com/cube for more information ***");
+  }
+}
+
 byte parseCommandHelp(
   char       *message,
   byte        length,
@@ -282,9 +306,13 @@ byte parseCommandHelp(
   command_t  *command,
   bytecode_t *bytecode) {
 
+
   byte errorCode = 0;
   bytecode->executer = command->executer;
 
+  printHelpFlag = true;
+  return(errorCode);
+  
   if (serial) {
     serial->println("  *** Available commands ***");
     serial->println("Entire cube:");
