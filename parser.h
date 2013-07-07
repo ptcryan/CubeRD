@@ -13,7 +13,7 @@
 #include "cubeRD.h"
 #include "engine.h"
 
-
+bool printHelp(void);
 byte parser(char *message, byte length, bytecode_t *bytecode);
 
 static const byte NUL_   = 0x00;  // Null character
@@ -30,7 +30,5 @@ typedef struct command_s {
     bytecode_t       *bytecode);
   byte (*executer)(bytecode_t bytecode);
 } command_t;
-
-bool printHelp(void);
 
 #endif  // PARSER_h

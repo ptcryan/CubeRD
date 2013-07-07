@@ -12,6 +12,10 @@
 #include <avr/pgmspace.h>
 #include "parser.h"
 
+void serialBegin(byte serialPort, uint32_t baudRate);
+void serialHandler(void);
+bool hasReceivedSerialCommand(void);
+
 static const uint32_t MESSAGE_TIMEOUT = 5000;  // milliseconds
 static const uint32_t SERIAL_HANDLER_PERIOD = 5;  // milliseconds
 
@@ -30,11 +34,5 @@ static const byte SEMIC = 0x3b;  // Semicolon ';'
 
 char message[32];
 byte messageLength = 0;
-
-void serialBegin(byte serialPort, uint32_t baudRate);
-void serialHandler(void);
-bool hasReceivedSerialCommand(void);
-
-extern Stream *serial;
 
 #endif  // SERIAL_h

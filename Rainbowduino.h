@@ -33,6 +33,7 @@ these example programs with no copyright.
 
 #include "CubeRD.h"
 
+// This is for compatibility with Rainbowduino example sketches
 CubeRD Rb;
 
 #endif  // RAINBOWDUINO_h

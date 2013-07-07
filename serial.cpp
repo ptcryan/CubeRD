@@ -18,6 +18,7 @@ boolean readMessage(void);
 uint32_t messageTimer = 0;
 uint32_t serialTimer = 0;
 Stream *serial;
+
 // Set to true the first time the sketch receives a serial command
 // using volatile since it's modified in an ISR.
 volatile bool receivedSerialCommand = false;

@@ -29,6 +29,36 @@ has kindly released these example programs with no copyright.
 
 #include "CubeRD.h"
 
+void send16bitData(unsigned int data);
+void clearDisplay(void);
+void latchData(void);
+void switchOnDrive(unsigned char line);
+
+void cubeAll(rgb_t rgb);
+void cubeFillPlaneZ(byte z, rgb_t rgb);
+void cubeSet(unsigned char x,
+                           unsigned char y,
+                           unsigned char z,
+                           rgb_t rgb);
+void cubeShift(byte axis, byte direction);
+void cubeNext(rgb_t rgb);
+void cubeCopyplane(byte axis, byte position, byte destination);
+void cubeMoveplane(byte axis, byte position, byte destination, rgb_t rgb);
+void cubeSetplane(byte axis, byte offset, rgb_t rgb);
+void cubeSetPixelXY(unsigned char x,
+                              unsigned char y,
+                              unsigned char colorR,
+                              unsigned char colorG,
+                              unsigned char colorB);
+rgb_t getPixelZXY(unsigned char z,
+                  unsigned char x,
+                  unsigned char y);
+
+extern void serialBegin(byte serialPort, uint32_t baudRate);
+extern void serialHandler(void);
+extern bool hasReceivedSerialCommand(void);
+extern bool printHelp(void);
+
 // Frame Buffer -- placed in RAM
 unsigned char frameBuffer[3][8][8]= {
 // blue
@@ -75,36 +105,6 @@ unsigned char YX[4][4] = {
   {3, 4, 3, 4}
 };
 
-void send16bitData(unsigned int data);
-void clearDisplay(void);
-void latchData(void);
-void switchOnDrive(unsigned char line);
-
-void cubeAll(rgb_t rgb);
-void cubeFillPlaneZ(byte z, rgb_t rgb);
-void cubeSet(unsigned char x,
-                           unsigned char y,
-                           unsigned char z,
-                           rgb_t rgb);
-void cubeShift(byte axis, byte direction);
-void cubeNext(rgb_t rgb);
-void cubeCopyplane(byte axis, byte position, byte destination);
-void cubeMoveplane(byte axis, byte position, byte destination, rgb_t rgb);
-void cubeSetplane(byte axis, byte offset, rgb_t rgb);
-void cubeSetPixelXY(unsigned char x,
-                              unsigned char y,
-                              unsigned char colorR,
-                              unsigned char colorG,
-                              unsigned char colorB);
-rgb_t getPixelZXY(unsigned char z,
-                  unsigned char x,
-                  unsigned char y);
-
-extern void serialBegin(byte serialPort, uint32_t baudRate);
-extern void serialHandler(void);
-extern bool hasReceivedSerialCommand(void);
-extern bool printHelp(void);
-
 unsigned char cursorX, cursorY, cursorZ;
 
 unsigned char lineDrive = 0;  // used within ISR
@@ -116,7 +116,6 @@ void CubeRD::begin(byte serialPort, uint32_t baudRate) {
 }
 
 // Init the Port lines and invoke timer 1 configuration
-
 void CubeRD::init() {
   DDR_Lines |= BIT_Lines;
   PORT_Lines &= ~BIT_Lines;
@@ -622,5 +621,3 @@ ISR(TIMER1_OVF_vect) {
   sei();
   printHelp();
 }
-
-//CubeRD Rb;
