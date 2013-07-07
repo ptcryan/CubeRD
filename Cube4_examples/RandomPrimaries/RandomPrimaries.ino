@@ -12,7 +12,7 @@ byte xPos;
 byte yPos;
 byte zPos;
 
-rgb_t colours[3] = {RED, GREEN, BLUE};
+rgb_t colours[3] = {COLOR_RED, COLOR_GREEN, COLOR_BLUE};
 
 Cube cube;
 

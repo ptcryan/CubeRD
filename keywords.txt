@@ -1,4 +1,5 @@
 Rainbowduino	KEYWORD1
+Cube	KEYWORD1
 init	KEYWORD2
 begin	KEYWORD2
 blankDisplay	KEYWORD2
@@ -6,12 +7,12 @@ setPixelXY	KEYWORD2
 setPixelZXY	KEYWORD2
 set	KEYWORD2
 all	KEYWORD2
-setAll	KEYWORD2
 cubeFillPlaneZ	KEYWORD2
 setplane	KEYWORD2
 shift	KEYWORD2
 copyplane	KEYWORD2
 moveplane	KEYWORD2
+hasReceivedSerialCommand	KEYWORD2
 drawCircle	KEYWORD2
 fillCircle	KEYWORD2
 drawLine	KEYWORD2

@@ -5,19 +5,17 @@
  * License: GPLv3
  */
 
-//#include "SPI.h"
-//#include "Cube.h"
-#include "Rainbowduino.h"
+#include "SPI.h"
+#include "Cube.h"
 
-//Cube cube;
+Cube cube;
 
 void setup(void) {
   // Serial port options for control of the Cube using serial commands are:
   // 0: Control via the USB connector (most common).
   // 1: Control via the RXD and TXD pins on the main board.
   // -1: Don't attach any serial port to interact with the Cube.
-//  cube.begin(0, 115200); // Start on serial port 0 (USB) at 115200 baud
-  Rb.init();
+  cube.begin(0, 115200); // Start on serial port 0 (USB) at 115200 baud
 }
 
 void loop(void) {
@@ -50,7 +48,7 @@ void rise()
       xPos = 0;
       while(xPos < 4)
       {
-        Rb.set(xPos, yPos, zPos, RED);
+        cube.set(xPos, yPos, zPos, COLOR_RED);
         xPos++;
         i++;
         delay(4);
@@ -78,7 +76,7 @@ void fall()
       yPos = 3;
       while(yPos > -1)
       {
-        Rb.set(xPos, yPos, zPos, BLACK);
+        cube.set(xPos, yPos, zPos, COLOR_BLACK);
         yPos--;
         delay(4);
       }

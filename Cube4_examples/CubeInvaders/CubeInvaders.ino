@@ -57,12 +57,12 @@ void setup(void) {
 void loop(void) {
   delay(20);
   wiichuck.update();
-  cube.all(BLACK);
+  cube.all(COLOR_BLACK);
   checkTrigger();
   updatePlayerPosition();
   updateEnemyPosition();
-  cube.set(playerX, playerY, playerZ, BLUE);
-  cube.set(enemyX, enemyY, enemyZ, RED);
+  cube.set(playerX, playerY, playerZ, COLOR_BLUE);
+  cube.set(enemyX, enemyY, enemyZ, COLOR_RED);
 }
 
 void updatePlayerPosition()
@@ -146,8 +146,8 @@ void shoot()
   
   if((enemyX == playerX) && (enemyZ == playerZ))
   {
-    cube.all(GREEN);
+    cube.all(COLOR_GREEN);
     delay(200);
-    cube.all(BLACK);
+    cube.all(COLOR_BLACK);
   }
 }

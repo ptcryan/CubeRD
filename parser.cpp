@@ -2,6 +2,7 @@
  * File:    parser.cpp
  * Version: 0.0
  * Author:  Andy Gelme (@geekscape)
+ * Updates: David Ryan (@ptcryan)
  * License: GPLv3
  *
  * Cube message parser.
@@ -13,7 +14,6 @@
  * - Decide how to represent the hidden location. Using -1 for now
  */
 
-//#include "cube.h"
 #include "parser.h"
 
 extern void cubeAll(rgb_t rgb);

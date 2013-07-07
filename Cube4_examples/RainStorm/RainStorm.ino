@@ -44,13 +44,13 @@ void loop(void) {
     drop2YPos = random(4);
   }
 
-  cube.all(BLACK);
+  cube.all(COLOR_BLACK);
   clouds();
 
   if(drop1ZPos > 0)
   {
     drop1ZPos--;
-    cube.set(drop1XPos, drop1YPos, drop1ZPos, BLUE);
+    cube.set(drop1XPos, drop1YPos, drop1ZPos, COLOR_BLUE);
   } else {
     drop1ZPos = 4;
   }
@@ -58,7 +58,7 @@ void loop(void) {
   if(drop2ZPos > 0)
   {
     drop2ZPos--;
-    cube.set(drop2XPos, drop2YPos, drop2ZPos, BLUE);
+    cube.set(drop2XPos, drop2YPos, drop2ZPos, COLOR_BLUE);
   } else {
     drop2ZPos = 4;
   }
@@ -79,9 +79,9 @@ void lightning()
     int i = 0;
     while (i < lightningFlashes)
     {
-      cube.all(WHITE);
+      cube.all(COLOR_WHITE);
       delay(50);
-      cube.all(BLACK);
+      cube.all(COLOR_BLACK);
       delay(150);
       i++;
     }
@@ -95,6 +95,6 @@ void clouds()
 {
   if(SHOWCLOUDS)
   {
-    cube.setplane(Z, 3, WHITE);
+    cube.setplane(Z, 3, COLOR_WHITE);
   }
 }

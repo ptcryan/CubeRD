@@ -1,17 +1,11 @@
 /*
- CubeRD.h
-*/
-
-#ifndef CUBERD_h
-#define CUBERD_h
-
-/*
- Rainbowduino v3.0 Library. 
+ CubeRD 1.0 Library. 
  
- 2011 Copyright (c) Seeed Technology Inc.
- 
- Authors: Albert.Miao, Visweswara R
+ Copyright (c) 2013 David Ryan
 
+ This library heavily reuses the Rainbowduino and Cube4 libraries from
+ Seeed Technology Inc. and Freetronics Inc.
+ 
  This library is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
  License as published by the Free Software Foundation; either
@@ -25,7 +19,6 @@
  You should have received a copy of the GNU Lesser General Public
  License along with this library; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
 */
 
 /*
@@ -34,6 +27,9 @@ algorithms and code presented in paper "The Beauty of Bresenham's Algorithm"
 by Alois Zingl, Vienna, Austria. The original author has kindly released
 these example programs with no copyright.
 */
+
+#ifndef CUBERD_h
+#define CUBERD_h
 
 #include <Arduino.h>
 #include <avr/pgmspace.h>

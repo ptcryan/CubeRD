@@ -26,15 +26,15 @@ void setup(void) {
   // -1: Don't attach any serial port to interact with the Cube.
   cube.begin(0, 115200); // Start on serial port 0 (USB) at 115200 baud
   pinMode(A4, INPUT);
-  cube.all(GREEN);
+  cube.all(COLOR_GREEN);
 }
 
 void loop(void) {
   int knockReading = analogRead(A4);
   if(knockReading > 5)
   {
-    cube.all(RED);
+    cube.all(COLOR_RED);
     delay(flashDuration);
   }
-  cube.all(GREEN);
+  cube.all(COLOR_GREEN);
 }

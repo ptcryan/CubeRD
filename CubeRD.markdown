@@ -1,22 +1,34 @@
-CubeRD
-======
+This Library mixes together the Rainbowduino Rainbow Cube library from
+Seeed Technologies and Cube4 from Freetronics.
 
-Summary
--------
-Library that mixes together the Rainbowduino Rainbow Cube library from Seeedstudio
-and Cube4 from Freetronics.
-
-The intent is the extend the Rainbowduino Library from Seeedstudio to include the
-library calls that Cube4 provides. This will make it possible to run the examples
+The intent is to extend the Rainbowduino Library from Seeed to include the
+library calls that Cube4 provides. This makes it possible to run the examples
 from either library.
 
-Rainbowduino is a Arduino compatible HW platform that provides capability to drive
-8x8 or 4x4x4 RGB LEDs. It is very similar to the Freetronics cube platform with the
-major differences being the order in which the LEDs are driven. Both use [TODO].
+Rainbowduino is a Arduino compatible HW platform that provides capability
+to drive 8x8 or 4x4x4 RGB LEDs. It is very similar to the Freetronics cube
+platform with the major differences being the order in which the LEDs are
+driven, and serial support built into the Freetronics library.
 
+Notes:
+There is a #define called USE_SERIAL_PORT that allows the built in serial
+capability of the Cube4 library to be turned on or off. By default it is
+enabled. If it is disabled sketch sizes are reduced considerably (~9KB).
+Sketches that use the serial port will still compile, but will not have
+serial port functionality.
 
-Licenses and Copyright
-----------------------
+Known bugs:
+The TestPattern sketch does not cycle through the test cases. Serial port
+function still works.
+
+Serial1 is not defined in SerialBegin(). It's commented out and left to
+the user to do whatever with it. The intent was to bind it to a serial
+port alternative to USB serial.
+
+Licenses and Copyright. This library heavily reuses the Rainbowduino and
+Cube4 libraries from Seeed Technology Inc. and Freetronics Inc.
+
+Rainbowduino library
 /*
  Rainbowduino v3.0 Library. 
  
@@ -41,6 +53,7 @@ Licenses and Copyright
 */
 http://www.seeedstudio.com
 
+Cube library
 /*
  * Cube4 Library
  *

@@ -2,6 +2,7 @@
  * File:    engine.h
  * Version: 0.0
  * Author:  Andy Gelme (@geekscape)
+ * Updates: David Ryan (@ptcryan)
  * License: GPLv3
  */
 
