@@ -61,22 +61,22 @@ void loop(void) {
   
   if(testState == 99 && previousTestState != 99)
   {
-    cube.all(BLACK);
+    cube.all(COLOR_BLACK);
     previousTestState = 99;
   }
 }
 
 void cycleCubeColours()
 {
-  cube.all(RED);
+  cube.all(COLOR_RED);
   delay(1000);
-  cube.all(GREEN);
+  cube.all(COLOR_GREEN);
   delay(1000);
-  cube.all(BLUE);
+  cube.all(COLOR_BLUE);
   delay(1000);
-  cube.all(ORANGE);
+  cube.all(COLOR_ORANGE);
   delay(1000);
-  cube.all(PINK);
+  cube.all(COLOR_PINK);
   delay(1000);
   cube.all(RGB(0x00, 0x44, 0xA));
   delay(1000);
@@ -97,8 +97,8 @@ void stepThroughLEDs()
       xPos = 0;
       while(xPos < 4)
       {
-        cube.all(BLACK);
-        cube.set(xPos, yPos, zPos, WHITE);
+        cube.all(COLOR_BLACK);
+        cube.set(xPos, yPos, zPos, COLOR_WHITE);
         xPos++;
         i++;
         delay(500);
@@ -113,14 +113,14 @@ void cyclePlaneColours()
 {
   for (byte i = 0; i < 4; i++)
   {
-    cube.all(BLACK);
-    cube.setplane(Z, i, RED);
+    cube.all(COLOR_BLACK);
+    cube.setplane(Z, i, COLOR_RED);
     delay(1000);
-    cube.all(BLACK);
-    cube.setplane(Z, i, GREEN);
+    cube.all(COLOR_BLACK);
+    cube.setplane(Z, i, COLOR_GREEN);
     delay(1000);
-    cube.all(BLACK);
-    cube.setplane(Z, i, BLUE);
+    cube.all(COLOR_BLACK);
+    cube.setplane(Z, i, COLOR_BLUE);
     delay(1000);
   }
 }
