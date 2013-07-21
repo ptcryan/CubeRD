@@ -1,17 +1,13 @@
 /*
- * File:    Rainstorm.ino
+ * File:    SnowDay.ino
  * Version: 1.0
- * Author:  Jonathan Oxer (jon@freetronics.com)
+ * Author:  David Ryan (@ptcryan)
  * License: GPLv3
  */
 
-#include "SPI.h"
 #include "Cube.h"
 
-#define LIGHTNINGINTERVAL 40 // How many raindrops between random lightning strikes, on average
-#define RAINDROPDELAY 150    // Milliseconds between raindrop movements
-#define MAXLIGHTNING 2       // Maximum number of flashes per lightning strike
-#define SHOWCLOUDS 1         // Display a "cloud" layer at the top
+#define SNOWFLAKEDELAY 200    // Milliseconds between raindrop movements
 
 byte drop1XPos;
 byte drop1YPos;
@@ -28,73 +24,43 @@ void setup(void) {
   // 0: Control via the USB connector (most common).
   // 1: Control via the RXD and TXD pins on the main board.
   // -1: Don't attach any serial port to interact with the Cube.
-  cube.begin(0, 115200); // Start on serial port 0 (USB) at 115200 baud
+  cube.begin(0, 115200);  // Start on serial port 0 (USB) at 115200 baud
 }
 
 void loop(void) {
-  if(drop1ZPos == 4)
-  {
+  if (drop1ZPos == 4) {
     drop1XPos = random(4);
     drop1YPos = random(4);
   }
 
-  if(drop2ZPos == 4)
-  {
+  if (drop2ZPos == 4) {
     drop2XPos = random(4);
     drop2YPos = random(4);
   }
 
   cube.all(COLOR_BLACK);
-  clouds();
+  snow();
 
-  if(drop1ZPos > 0)
-  {
+  if (drop1ZPos > 0) {
     drop1ZPos--;
     cube.set(drop1XPos, drop1YPos, drop1ZPos, COLOR_WHITE);
   } else {
     drop1ZPos = 4;
   }
 
-  if(drop2ZPos > 0)
-  {
+  if (drop2ZPos > 0) {
     drop2ZPos--;
     cube.set(drop2XPos, drop2YPos, drop2ZPos, COLOR_WHITE);
   } else {
     drop2ZPos = 4;
   }
 
-  delay(RAINDROPDELAY);
-
-//  lightning();
+  delay(SNOWFLAKEDELAY);
 }
 
 /**
- * Randomly display a lightning strike
+ * Display a white cloud layer at the bottom of the cube
  */
-void lightning()
-{
-  if(random(LIGHTNINGINTERVAL) == 1)
-  {
-    int lightningFlashes = random(0, MAXLIGHTNING + 1);
-    int i = 0;
-    while (i < lightningFlashes)
-    {
-      cube.all(COLOR_WHITE);
-      delay(50);
-      cube.all(COLOR_BLACK);
-      delay(150);
-      i++;
-    }
-  }
-}
-
-/**
- * Display a white cloud layer at the top of the cube
- */
-void clouds()
-{
-  if(SHOWCLOUDS)
-  {
-    cube.setplane(Z, 0, COLOR_WHITE);
-  }
+void snow() {
+  cube.setplane(Z, 0, COLOR_WHITE);
 }
