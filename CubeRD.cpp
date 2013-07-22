@@ -424,7 +424,7 @@ void cubeCopyplane(byte axis, byte position, byte destination) {
     byte z = 0;
     for (byte z = 0;  z < CUBE_SIZE;  z++) {
       for (byte y = 0;  y < CUBE_SIZE;  y++) {
-        cubeSet(destination, y, z, getPixelZXY(position, y, z));
+        cubeSet(destination, y, z, getPixelZXY(z, position, y));
       }
     }
   }
@@ -433,7 +433,7 @@ void cubeCopyplane(byte axis, byte position, byte destination) {
     byte z = 0;
     for (byte z = 0;  z < CUBE_SIZE;  z++) {
       for (byte x = 0;  x < CUBE_SIZE;  x++) {
-        cubeSet(x, destination, z, getPixelZXY(x, position, z));
+        cubeSet(x, destination, z, getPixelZXY(z, x, position));
       }
     }
   }
@@ -442,7 +442,7 @@ void cubeCopyplane(byte axis, byte position, byte destination) {
     byte y = 0;
     for (byte y = 0;  y < CUBE_SIZE;  y++) {
       for (byte x = 0;  x < CUBE_SIZE;  x++) {
-        cubeSet(x, y, destination, getPixelZXY(x, y, position));
+        cubeSet(x, y, destination, getPixelZXY(position, x, y));
       }
     }
   }
