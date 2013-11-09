@@ -307,7 +307,7 @@ byte parseCommandSetplane(
   return(errorCode);
 };
 
-bool printHelp(void) {
+void printHelp(void) {
   if (printHelpFlag) {
     printHelpFlag = false;
     serial->println("  *** Available commands ***");

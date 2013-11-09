@@ -14,7 +14,7 @@
 #include "cubeRD.h"
 #include "engine.h"
 
-bool printHelp(void);
+void printHelp(void);
 byte parser(char *message, byte length, bytecode_t *bytecode);
 
 static const byte NUL_   = 0x00;  // Null character

@@ -62,7 +62,7 @@ rgb_t getPixelZXY(unsigned char z,
 extern void serialBegin(byte serialPort, uint32_t baudRate);
 extern void serialHandler(void);
 extern bool hasReceivedSerialCommand(void);
-extern bool printHelp(void);
+extern void printHelp(void);
 #endif  // USE_SERIAL_PORT
 
 // Frame Buffer -- placed in RAM
